@@ -109,7 +109,7 @@ class MediaModelList extends JModelLegacy
 
 		// Get current path from request
 		$current = (string) $this->getState('folder');
-        	$params = JComponentHelper::getParams('com_media');
+		$params = JComponentHelper::getParams('com_media');
 
 		$basePath  = COM_MEDIA_BASE . ((strlen($current) > 0) ? '/' . $current : '');
 		$mediaBase = str_replace(DIRECTORY_SEPARATOR, '/', COM_MEDIA_BASE . '/');
@@ -147,43 +147,44 @@ class MediaModelList extends JModelLegacy
 
 					$ext = strtolower(JFile::getExt($file));
 
-                    // Image
-                    $image_extensions = ['jpg', 'png', 'gif', 'xcf', 'odg', 'bmp', 'jpeg', 'ico'];
-                    $image_extensions = array_merge($image_extensions, explode(',', $params->get('image_extensions')));
-                    if (in_array($ext, $image_extensions))
-                    {
-                        $info = @getimagesize($tmp->path);
-                        $tmp->width  = @$info[0];
-                        $tmp->height = @$info[1];
-                        $tmp->type   = @$info[2];
-                        $tmp->mime   = @$info['mime'];
+					// Image
+					$image_extensions = array('jpg', 'png', 'gif', 'xcf', 'odg', 'bmp', 'jpeg', 'ico');
+					$image_extensions = array_merge($image_extensions, explode(',', $params->get('image_extensions')));
 
-                        if (($info[0] > 60) || ($info[1] > 60))
-                        {
-                            $dimensions = MediaHelper::imageResize($info[0], $info[1], 60);
-                            $tmp->width_60 = $dimensions[0];
-                            $tmp->height_60 = $dimensions[1];
-                        }
-                        else
-                        {
-                            $tmp->width_60 = $tmp->width;
-                            $tmp->height_60 = $tmp->height;
-                        }
+					if (in_array($ext, $image_extensions))
+					{
+						$info = @getimagesize($tmp->path);
+						$tmp->width  = @$info[0];
+						$tmp->height = @$info[1];
+						$tmp->type   = @$info[2];
+						$tmp->mime   = @$info['mime'];
 
-                        if (($info[0] > 16) || ($info[1] > 16))
-                        {
-                            $dimensions = MediaHelper::imageResize($info[0], $info[1], 16);
-                            $tmp->width_16 = $dimensions[0];
-                            $tmp->height_16 = $dimensions[1];
-                        }
-                        else
-                        {
-                            $tmp->width_16 = $tmp->width;
-                            $tmp->height_16 = $tmp->height;
-                        }
+						if ($info[0] > 60 || $info[1] > 60)
+						{
+							$dimensions = MediaHelper::imageResize($info[0], $info[1], 60);
+							$tmp->width_60  = $dimensions[0];
+							$tmp->height_60 = $dimensions[1];
+						}
+						else
+						{
+							$tmp->width_60  = $tmp->width;
+							$tmp->height_60 = $tmp->height;
+						}
 
-                        $images[] = $tmp;
-                    }
+						if ($info[0] > 16 || $info[1] > 16)
+						{
+							$dimensions = MediaHelper::imageResize($info[0], $info[1], 16);
+							$tmp->width_16  = $dimensions[0];
+							$tmp->height_16 = $dimensions[1];
+						}
+						else
+						{
+							$tmp->width_16  = $tmp->width;
+							$tmp->height_16 = $tmp->height;
+						}
+
+						$images[] = $tmp;
+					}
 
 					switch ($ext)
 					{
